@@ -18,7 +18,7 @@ class ItemFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'description' => fake()->paragraph(),
+            'description' => fake()->paragraphs(3,true),
             'obtained' => fake()->dateTimeThisDecade(),
 
         ];

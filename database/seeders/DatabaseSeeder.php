@@ -14,7 +14,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $users_count = rand(8,12);
+        $users = collect();
+        for($i = 1; $i <= $users_count; $i++)
+        {
+            $users->add(\App\Models\User::factory()->create([
+                'email' => 'user' . $i . '@szerveroldali.hu',
+                'password' => 'password',
+            ]));
+
+        }
+        $users->add(\App\Models\User::factory()->create([
+            'email' => 'admin@szerveroldali.hu',
+            'password' => 'adminpwd',
+            'is_admin' => true,
+        ]));
+        
+        $items = \App\Models\Item::factory(rand(10,15))->create();
+        $labels = \App\Models\Label::factory(rand(5,10))->create();
+        $comments = \App\Models\Comment::factory(rand(7,15))->create();
+
+        $items->each(function ($item) use(&$labels) {
+            $item->labels()->sync($labels->random(rand(1,$labels->count())));
+        });
+
+        $comments->each(function ($comment) use(&$users, &$items) {
+            $comment->user()->associate($users->random())->save();
+            $comment->item()->associate($items->random())->save();
+        });
+
+
+
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

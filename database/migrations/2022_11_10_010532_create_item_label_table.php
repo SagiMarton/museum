@@ -13,15 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('item_label', function (Blueprint $table) {
             $table->id();
-            $table->text('text');
-            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('item_id')->nullable();
+            $table->unsignedBigInteger('label_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['item_id','label_id']);
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade');
+
         });
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('item_label');
     }
 };
