@@ -6,14 +6,14 @@
     <h1>Create category</h1>
     <div class="mb-4">
         {{-- TODO: Link --}}
-        <a href="#"><i class="fas fa-long-arrow-alt-left"></i> Back to the homepage</a>
+        <a href="{{ route('items.index') }}"><i class="fas fa-long-arrow-alt-left"></i> Back to the homepage</a>
     </div>
 
     {{-- TODO: Session flashes --}}
 
     {{-- TODO: action, method --}}
-    <form>
-
+    <form action="{{ route('labels.store') }}" method="POST">
+        @csrf
         <div class="form-group row mb-3">
             <label for="name" class="col-sm-2 col-form-label">Name*</label>
             <div class="col-sm-10">

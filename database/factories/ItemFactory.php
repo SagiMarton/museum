@@ -17,9 +17,9 @@ class ItemFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'description' => fake()->paragraphs(3,true),
-            'obtained' => fake()->dateTimeThisDecade(),
+            'name' => fake()->words(rand(1,3),true),
+            'description' => fake()->paragraphs(rand(2,4),true),
+            'obtained' => fake()->dateTimeThisDecade()->format('Y-m-d'),
 
         ];
     }

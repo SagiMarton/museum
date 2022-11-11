@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Posts')
+@section('title', 'Items')
 
 @section('content')
 <div class="container">
@@ -11,9 +11,9 @@
             <div class="float-lg-end">
                 {{-- TODO: Links, policy --}}
 
-                <a href="#" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create post</a>
+                <a href="{{ route('items.create') }}" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create item</a>
 
-                <a href="#" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create category</a>
+                <a href="{{ route('labels.create') }}" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create label</a>
 
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="row">
                 {{-- TODO: Read posts from DB --}}
 
-                @forelse ([1,2,3,4,5] as $post)
+                @forelse ($items->sortByDesc('obtained') as $item)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch">
                         <div class="card w-100">
                             <img
@@ -36,35 +36,38 @@
                             >
                             <div class="card-body">
                                 {{-- TODO: Title --}}
-                                <h5 class="card-title mb-0">Post title</h5>
+                                <h5 class="card-title mb-0">{{ $item->name }}</h5>
                                 <p class="small mb-0">
                                     <span class="me-2">
-                                        <i class="fas fa-user"></i>
+                                        <i class="fa fa-comment"></i>
                                         {{-- TODO: Author --}}
-                                        <span>By Author</span>
+                                        <span>Comments: {{ $item->comments->count()}}</span>
                                     </span>
 
                                     <span>
                                         <i class="far fa-calendar-alt"></i>
                                         {{-- TODO: Date --}}
-                                        <span>01/01/2022</span>
+                                        <span>Obtained:{{ $item->obtained }}</span>
                                     </span>
                                 </p>
 
                                 {{-- TODO: Read post categories from DB --}}
-                                @foreach (['primary', 'secondary','danger', 'warning', 'info', 'dark'] as $category)
-                                    <a href="#" class="text-decoration-none">
-                                        <span class="badge bg-{{ $category }}">{{ $category }}</span>
-                                    </a>
+                                @foreach ($item->labels as $label)
+                                    @if ($label->display)
+                                        <a href="{{ route('labels.show', $label) }}" class="text-decoration-none">
+                                        {{--<span class="badge bg-{{ $category }}">{{ $category }}</span>--}}
+                                        <span class="badge" style="background-color: {{$label->color}}">{{ $label->name }}</span>
+                                        </a>
+                                    @endif
                                 @endforeach
 
                                 {{-- TODO: Short desc --}}
-                                <p class="card-text mt-1">Short description</p>
+                                <p class="card-text mt-1">{{ Str::words($item->description,5,'...')}}</p>
                             </div>
                             <div class="card-footer">
                                 {{-- TODO: Link --}}
-                                <a href="#" class="btn btn-primary">
-                                    <span>View post</span> <i class="fas fa-angle-right"></i>
+                                <a href="{{ route('items.show', $item) }}" class="btn btn-primary">
+                                    <span>View item</span> <i class="fas fa-angle-right"></i>
                                 </a>
                             </div>
                         </div>
@@ -72,7 +75,7 @@
                 @empty
                     <div class="col-12">
                         <div class="alert alert-warning" role="alert">
-                            No posts found!
+                            No items on display! Check back later!
                         </div>
                     </div>
                 @endforelse
@@ -92,10 +95,13 @@
                         </div>
                         <div class="card-body">
                             {{-- TODO: Read categories from DB --}}
-                            @foreach (['primary', 'secondary','danger', 'warning', 'info', 'dark'] as $category)
-                                <a href="#" class="text-decoration-none">
-                                    <span class="badge bg-{{ $category }}">{{ $category }}</span>
-                                </a>
+                            @foreach ($labels as $label)
+                                @if ($label->display)
+                                    <a href="{{ route('labels.show', $label) }}" class="text-decoration-none">
+                                    {{--<span class="badge bg-{{ $category }}">{{ $category }}</span>--}}
+                                    <span class="badge" style="background-color: {{$label->color}}">{{ $label->name }}</span>
+                                    </a>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -110,9 +116,9 @@
                             <div class="small">
                                 <ul class="fa-ul">
                                     {{-- TODO: Read stats from DB --}}
-                                    <li><span class="fa-li"><i class="fas fa-user"></i></span>Users: N/A</li>
-                                    <li><span class="fa-li"><i class="fas fa-layer-group"></i></span>Categories: N/A</li>
-                                    <li><span class="fa-li"><i class="fas fa-file-alt"></i></span>Posts: N/A</li>
+                                    <li><span class="fa-li"><i class="fas fa-user"></i></span>Users: {{ $users_count }}</li>
+                                    <li><span class="fa-li"><i class="fa fa-tag"></i></span>Labels: {{$labels->count()}}</li>
+                                    <li><span class="fa-li"><i class="fas fa-file-alt"></i></span>Items: {{ $items->count() }}</li>
                                 </ul>
                             </div>
                         </div>

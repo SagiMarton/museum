@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LabelController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,35 +17,40 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return Redirect::route('items.index');
 });
 
-Route::get('/posts', function () {
-    return view('posts.index');
-});
-
-Route::get('/posts/create', function () {
-    return view('posts.create');
-});
-
-Route::get('/posts/x', function () {
-    return view('posts.show');
-});
-
-Route::get('/posts/x/edit', function () {
-    return view('posts.edit');
-});
-
-// -----------------------------------------
-
-Route::get('/categories/create', function () {
-    return view('categories.create');
-});
-
-Route::get('/categories/x', function () {
-    return view('categories.show');
-});
-
-// -----------------------------------------
+Route::resource('items', ItemController::class);
+Route::resource('labels', LabelController::class);
 
 Auth::routes();
+// Route::get('/items', function () {
+//     return view('items.index',['users_count' => User::count()]);
+// })->name('items.index');
+
+// Route::get('/items/create', function () {
+//     return view('items.create');
+// });
+
+// Route::get('/items/x', function () {
+//     return view('items.show');
+// });
+
+// Route::get('/items/x/edit', function () {
+
+//     return view('items.edit');
+// });
+
+// // -----------------------------------------
+
+// Route::get('/labels/create', function () {
+//     return view('labels.create');
+// });
+
+// Route::get('/labels/x', function () {
+//     return view('labels.show');
+// });
+
+// -----------------------------------------
+
+
