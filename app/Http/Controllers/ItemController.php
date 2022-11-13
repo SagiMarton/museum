@@ -6,6 +6,10 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\Label;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class ItemController extends Controller
 {
@@ -29,7 +33,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        return view('items.create',['labels' => Label::all()]);
     }
 
     /**
@@ -40,7 +44,43 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate(
+            [
+                'name' => 'required|min:3',
+                'description' => 'required|min:10',
+                'labels' => 'nullable|array',
+                'categories.*' => 'numeric|integer|exists:labels,id|',
+                'cover_image' => 'nullable|file|image|max:4096'
+            ],
+            [
+                 'name.required' => 'Name is required',
+            ]
+        );
+
+        $fn = null;
+
+        if($request->hasFile('cover_image'))
+        {
+            $file = $request->file('cover_image');
+            $fn = 'ci_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->put($fn, $file->get());
+        }
+
+        $item = Item::factory()->create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'obtained' => now()->format('Y-m-d'),
+            'image' => $fn,
+        ]);
+
+        if (isset($validated['labels']))
+        {
+            $item->labels()->sync($validated['labels']);
+        }
+
+        Session::flash("item_created", $validated['name']);
+
+        return Redirect::route('items.create');
     }
 
     /**
@@ -51,7 +91,7 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        //
+        return view('items.show', ['item' => $item]);
     }
 
     /**

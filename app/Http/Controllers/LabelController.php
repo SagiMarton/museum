@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Label;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class LabelController extends Controller
 {
@@ -35,7 +37,26 @@ class LabelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate(
+            [
+                'name' => 'required|min:3',
+                'color' => ['required','regex:/#([0-9]|[a-f]){6}/']
+            ],
+            [
+                'name.required' => 'Name is required',
+            ]
+        );
+
+        Label::factory()->create([
+            'name' => $validated['name'],
+            'color' => $validated['color'] . 'ff',
+            'display' => true,
+        ]);
+
+        Session::flash("label_created", $validated['name']);
+
+        return Redirect::route('labels.create');
+
     }
 
     /**

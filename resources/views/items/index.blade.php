@@ -5,7 +5,7 @@
 <div class="container">
     <div class="row justify-content-between">
         <div class="col-12 col-md-8">
-            <h1>All posts</h1>
+            <h1>Exhibited items</h1>
         </div>
         <div class="col-12 col-md-4">
             <div class="float-lg-end">
@@ -26,11 +26,15 @@
             <div class="row">
                 {{-- TODO: Read posts from DB --}}
 
-                @forelse ($items->sortByDesc('obtained') as $item)
+                @forelse ($items->sortByDesc('obtained')->sortBy('name') as $item)
                     <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-self-stretch">
                         <div class="card w-100">
                             <img
-                                src="{{ asset('images/default_post_cover.jpg') }}"
+                                src="{{
+                                asset($item->image
+                                    ? 'storage/' . $item->image
+                                    : 'images/default_item_cover.webp')
+                                }}"
                                 class="card-img-top"
                                 alt="Post cover"
                             >
@@ -91,7 +95,7 @@
                 <div class="col-12 mb-3">
                     <div class="card bg-light">
                         <div class="card-header">
-                            Categories
+                            Labels
                         </div>
                         <div class="card-body">
                             {{-- TODO: Read categories from DB --}}

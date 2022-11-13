@@ -1,6 +1,6 @@
 @extends('layouts.app')
 {{-- TODO: Post title --}}
-@section('title', 'View post: ')
+@section('title', 'View item: ' . $item->name)
 
 @section('content')
 <div class="container">
@@ -10,30 +10,29 @@
     <div class="row justify-content-between">
         <div class="col-12 col-md-8">
             {{-- TODO: Title --}}
-            <h1>Post title</h1>
+            <h1> {{ $item->name}}  </h1>
 
-            <p class="small text-secondary mb-0">
-                <i class="fas fa-user"></i>
-                {{-- TODO: Author --}}
-                <span>By Author</span>
-            </p>
+
             <p class="small text-secondary mb-0">
                 <i class="far fa-calendar-alt"></i>
                 {{-- TODO: Date --}}
-                <span>01/01/2022</span>
+                <span>{{ $item->obtained }}</span>
             </p>
 
             <div class="mb-2">
                 {{-- TODO: Read post categories from DB --}}
-                @foreach (['primary', 'secondary','danger', 'warning', 'info', 'dark'] as $category)
-                    <a href="#" class="text-decoration-none">
-                        <span class="badge bg-{{ $category }}">{{ $category }}</span>
-                    </a>
+                @foreach ($item->labels as $label)
+                    @if ($label->display)
+                        <a href="{{ route('labels.show', $label) }}" class="text-decoration-none">
+                        {{--<span class="badge bg-{{ $category }}">{{ $category }}</span>--}}
+                            <span class="badge" style="background-color: {{$label->color}}">{{ $label->name }}</span>
+                        </a>
+                    @endif
                 @endforeach
             </div>
 
             {{-- TODO: Link --}}
-            <a href="#"><i class="fas fa-long-arrow-alt-left"></i> Back to the homepage</a>
+            <a href="{{ route('items.index') }}"><i class="fas fa-long-arrow-alt-left"></i> Back to the homepage</a>
 
         </div>
 
@@ -41,10 +40,10 @@
             <div class="float-lg-end">
 
                 {{-- TODO: Links, policy --}}
-                <a role="button" class="btn btn-sm btn-primary" href="#"><i class="far fa-edit"></i> Edit post</a>
+                <a role="button" class="btn btn-sm btn-primary" href="#"><i class="far fa-edit"></i> Edit item</a>
 
                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-confirm-modal"><i class="far fa-trash-alt">
-                    <span></i> Delete post</span>
+                    <span></i> Delete item</span>
                 </button>
 
             </div>
@@ -85,14 +84,19 @@
     <img
         id="cover_preview_image"
         {{-- TODO: Cover --}}
-        src="{{ asset('images/default_post_cover.jpg') }}"
+        src="{{
+            asset($item->image
+                ? 'storage/' . $item->image
+                : 'images/default_item_cover.webp')
+            }}"
         alt="Cover preview"
+        width="350px"
         class="my-3"
     >
 
     <div class="mt-3">
         {{-- TODO: Post paragraphs --}}
-         Lorem ipsum
+         {!! nl2br(e($item->description))!!}
     </div>
 </div>
 @endsection
