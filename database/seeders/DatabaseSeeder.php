@@ -16,20 +16,21 @@ class DatabaseSeeder extends Seeder
     {
         $users_count = rand(8,12);
         $users = collect();
+        $password = bcrypt('password');
         for($i = 1; $i <= $users_count; $i++)
         {
             $users->add(\App\Models\User::factory()->create([
                 'email' => 'user' . $i . '@szerveroldali.hu',
-                'password' => 'password',
+                'password' => $password,
             ]));
 
         }
         $users->add(\App\Models\User::factory()->create([
             'email' => 'admin@szerveroldali.hu',
-            'password' => 'adminpwd',
+            'password' => bcrypt('adminpwd'),
             'is_admin' => true,
         ]));
-        
+
         $items = \App\Models\Item::factory(rand(10,15))->create();
         $labels = \App\Models\Label::factory(rand(5,10))->create();
         $comments = \App\Models\Comment::factory(rand(7,15))->create();

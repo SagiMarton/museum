@@ -10,16 +10,30 @@
         <div class="col-12 col-md-4">
             <div class="float-lg-end">
                 {{-- TODO: Links, policy --}}
-
+                @can('create', App\Item::class)
                 <a href="{{ route('items.create') }}" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create item</a>
 
+                @endcan
+                @can('create', App\Label::class)
                 <a href="{{ route('labels.create') }}" role="button" class="btn btn-sm btn-success mb-1"><i class="fas fa-plus-circle"></i> Create label</a>
+                @endcan
 
             </div>
         </div>
     </div>
 
     {{-- TODO: Session flashes --}}
+
+    @if (Session::has('item_deleted'))
+        <div class="alert alert-success" role="alert">
+            Item {{ Session::get('item_deleted')}} successfully deleted!
+        </div>
+    @endif
+    @if (Session::has('label_deleted'))
+        <div class="alert alert-success" role="alert">
+            Label {{ Session::get('label_deleted')}} successfully deleted!
+        </div>
+    @endif
 
     <div class="row mt-3">
         <div class="col-12 col-lg-9">
@@ -57,7 +71,7 @@
 
                                 {{-- TODO: Read post categories from DB --}}
                                 @foreach ($item->labels as $label)
-                                    @if ($label->display)
+                                    @if ($label->display || (Auth::check() && Auth::user()->is_admin))
                                         <a href="{{ route('labels.show', $label) }}" class="text-decoration-none">
                                         {{--<span class="badge bg-{{ $category }}">{{ $category }}</span>--}}
                                         <span class="badge" style="background-color: {{$label->color}}">{{ $label->name }}</span>
@@ -86,6 +100,7 @@
             </div>
 
             <div class="d-flex justify-content-center">
+                {{ $items->links() }}
                 {{-- TODO: Pagination --}}
             </div>
 
@@ -100,7 +115,7 @@
                         <div class="card-body">
                             {{-- TODO: Read categories from DB --}}
                             @foreach ($labels as $label)
-                                @if ($label->display)
+                                @if ($label->display || (Auth::check() && Auth::user()->is_admin))
                                     <a href="{{ route('labels.show', $label) }}" class="text-decoration-none">
                                     {{--<span class="badge bg-{{ $category }}">{{ $category }}</span>--}}
                                     <span class="badge" style="background-color: {{$label->color}}">{{ $label->name }}</span>
@@ -122,7 +137,7 @@
                                     {{-- TODO: Read stats from DB --}}
                                     <li><span class="fa-li"><i class="fas fa-user"></i></span>Users: {{ $users_count }}</li>
                                     <li><span class="fa-li"><i class="fa fa-tag"></i></span>Labels: {{$labels->count()}}</li>
-                                    <li><span class="fa-li"><i class="fas fa-file-alt"></i></span>Items: {{ $items->count() }}</li>
+                                    <li><span class="fa-li"><i class="fas fa-file-alt"></i></span>Items: {{ $items->total() }}</li>
                                 </ul>
                             </div>
                         </div>

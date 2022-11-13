@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LabelController;
+use App\Http\Controllers\CommentController;
 use App\Models\User;
 
 /*
@@ -22,6 +23,7 @@ Route::get('/', function () {
 
 Route::resource('items', ItemController::class);
 Route::resource('labels', LabelController::class);
+Route::resource('comments', CommentController::class);
 
 Auth::routes();
 // Route::get('/items', function () {

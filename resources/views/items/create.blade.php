@@ -10,11 +10,7 @@
     </div>
 
 
-    @if (Session::has('item_created'))
-        <div class="alert alert-success" role="alert">
-            Item ({{ Session::get('item_created') }}) successfully created!
-        </div>
-    @endif
+
 
     {{-- TODO: action, method, enctype --}}
     <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
